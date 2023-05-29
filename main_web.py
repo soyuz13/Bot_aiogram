@@ -1,10 +1,11 @@
-from aiohttp import web
+from aiohttp.web import run_app, Response, get
+from aiohttp.web_app import Application
 
 
 async def hello(request):
-    return web.Response(text="Hello, world")
+    return Response(text="Hello, world")
 
-app = web.Application()
-app.add_routes([web.get('/', hello)])
+app = Application()
+app.add_routes([get('/', hello)])
 
-web.run_app(app, host='176.124.192.33', port=88)
+run_app(app, host='176.124.192.33', port=88)
