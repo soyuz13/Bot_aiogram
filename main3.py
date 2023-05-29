@@ -49,7 +49,11 @@ def main():
     SimpleRequestHandler(
         dispatcher=dp,
         bot=bot,
-        ).register(application, path="/webhook")
+        ).register(application, path="/webhook", mylist=[],
+                   mylist2=[],
+                   mylist3=[],
+                   group_name='',
+                   subgr_name='')
     setup_application(application, dp, bot=bot, mylist=[],
                       mylist2=[],
                       mylist3=[],
