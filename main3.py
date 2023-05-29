@@ -14,7 +14,7 @@ from aiohttp.web_request import Request
 
 from config import TOKEN, CHAT_ID, APP_BASE_URL
 from handlers import router
-from aiogram.types.input_file import InputFile
+from aiogram.types import InputFile
 
 application = Application()
 
