@@ -50,7 +50,11 @@ def main():
         dispatcher=dp,
         bot=bot,
         ).register(application, path="/webhook")
-    setup_application(application, dp, bot=bot)
+    setup_application(application, dp, bot=bot, mylist=[],
+                      mylist2=[],
+                      mylist3=[],
+                      group_name='',
+                      subgr_name='')
 
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_context.load_cert_chain('cert.pem', 'private.key')
