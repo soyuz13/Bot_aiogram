@@ -51,7 +51,7 @@ def main():
         ).register(application, path="/webhook")
     setup_application(application, dp, bot=bot)
 
-    run_app(application, host="0.0.0.0", port=88)
+    run_app(application, host="176.124.192.33", port=80)
 
     # await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(), mylist=[1,2,3])
 
