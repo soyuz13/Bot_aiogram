@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import ssl
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums.parse_mode import ParseMode
@@ -51,7 +52,10 @@ def main():
         ).register(application, path="/webhook")
     setup_application(application, dp, bot=bot)
 
-    run_app(application, host="176.124.192.33", port=80)
+    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context.load_cert_chain('cert.pem', 'private.key')
+
+    run_app(application, host="176.124.192.33", port=80, ssl_context=ssl_context)
 
     # await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(), mylist=[1,2,3])
 
