@@ -53,7 +53,7 @@ async def start_handler1(msg: Message, *args, **kwargs):
 
 
 @router.message(Command("nevatom"))
-async def start_handler2(msg: Message, mylist: list, mylist2: list, mylist3: list, group_name: str):
+async def start_handler2(msg: Message, mylist: list, mylist2: list, mylist3: list, group_name: str, *args, **kwargs):
     mylist.clear()
     mylist2.clear()
     mylist3.clear()
