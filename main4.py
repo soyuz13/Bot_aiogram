@@ -66,4 +66,4 @@ async def hello(request):
 app = Application()
 app.add_routes([get('/', hello)])
 
-run_app(app, host='176.124.192.33', port=88)
+run_app(app, host='127.0.0.1', port=88)
