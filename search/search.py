@@ -7,6 +7,7 @@ import random
 from data_structure import Group, Subgroup
 from pathlib import Path
 from datetime import datetime as dtime
+from transliterate import translit
 
 
 DOMAIN_URL = 'https://www.nevatom.ru'
@@ -85,7 +86,7 @@ async def make_request(selected_subcats: list[str], group_name, subgr_name): #, 
         fullurl = DOMAIN_URL + item
         print(fullurl)
         await get_filters(fullurl)
-    print('Все!')
+    print(translit('Все!', reversed=True))
     df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
     df.to_excel('Nevatom.xlsx', index=False)
     FULL_LIST.clear()
@@ -106,7 +107,7 @@ async def get_first_page(filters: list):
     global FILTER
     for filter_ in filters:
         FILTER = filter_.text.strip()
-        print('......' + FILTER)
+        print(translit('......' + FILTER))
         with open('links.txt', 'a') as fil:
             fil.write(FILTER + '\n')
         filter_href = DOMAIN_URL + filter_.find('a')['href']
