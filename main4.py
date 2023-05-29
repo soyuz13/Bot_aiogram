@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from aiohttp.web import run_app
+from aiohttp.web import run_app, get, Response
 from aiohttp.web_app import Application
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiogram.types import MenuButtonWebApp, WebAppInfo
