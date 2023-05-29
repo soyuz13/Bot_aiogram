@@ -73,7 +73,7 @@ def get_link_to_filter_page(subgroups: list):
     global SUBGROUP
     for subgroup in subgroups:
         SUBGROUP = subgroup.text
-        print(translit('...' + SUBGROUP))
+        print(translit('...' + SUBGROUP, reversed=True, language_code='ru'))
         href = subgroup.find('a')['href']
         get_filters(DOMAIN_URL + href)
 
@@ -86,7 +86,7 @@ async def make_request(selected_subcats: list[str], group_name, subgr_name): #, 
         fullurl = DOMAIN_URL + item
         print(fullurl)
         await get_filters(fullurl)
-    print(translit('Все!', reversed=True))
+    print(translit('Все!', reversed=True, language_code='ru'))
     df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
     df.to_excel('Nevatom.xlsx', index=False)
     FULL_LIST.clear()
@@ -107,7 +107,7 @@ async def get_first_page(filters: list):
     global FILTER
     for filter_ in filters:
         FILTER = filter_.text.strip()
-        print(translit('......' + FILTER))
+        print(translit('......' + FILTER, reversed=True, language_code='ru'))
         with open('links.txt', 'a') as fil:
             fil.write(FILTER + '\n')
         filter_href = DOMAIN_URL + filter_.find('a')['href']
