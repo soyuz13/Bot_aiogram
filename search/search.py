@@ -73,7 +73,7 @@ def get_link_to_filter_page(subgroups: list):
     global SUBGROUP
     for subgroup in subgroups:
         SUBGROUP = subgroup.text
-        print('...' + SUBGROUP)
+        print(translit('...' + SUBGROUP))
         href = subgroup.find('a')['href']
         get_filters(DOMAIN_URL + href)
 
