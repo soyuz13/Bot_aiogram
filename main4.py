@@ -51,7 +51,7 @@ def main():
         ).register(application, path="/webhook")
     setup_application(application, dp, bot=bot)
 
-    run_app(application, host="0.0.0.0", port=88)
+    run_app(application, host="0.0.0.0", port=443)
 
     # await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(), mylist=[1,2,3])
 
@@ -66,4 +66,4 @@ async def hello(request):
 app = Application()
 app.add_routes([get('/', hello)])
 
-run_app(app, host='127.0.0.1', port=88)
+run_app(app, host='127.0.0.1', port=443)
