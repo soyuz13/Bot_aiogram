@@ -43,7 +43,7 @@ def get_attr(category: int, subcategory: int, param: str):
 
 
 @router.message(Command("start"))
-async def start_handler(msg: Message, *args, **kwargs):
+async def start_handler1(msg: Message, *args, **kwargs):
     await msg.answer("Привет! Это служебный бот.\n"
                      "Команды:\n"
                      "/help - список команд (в разработке)\n"
@@ -53,7 +53,7 @@ async def start_handler(msg: Message, *args, **kwargs):
 
 
 @router.message(Command("nevatom"))
-async def start_handler(msg: Message, mylist: list, mylist2: list, mylist3: list, group_name: str):
+async def start_handler2(msg: Message, mylist: list, mylist2: list, mylist3: list, group_name: str):
     mylist.clear()
     mylist2.clear()
     mylist3.clear()
