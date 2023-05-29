@@ -43,7 +43,7 @@ def get_attr(category: int, subcategory: int, param: str):
 
 
 @router.message(Command("start"))
-async def start_handler(msg: Message):
+async def start_handler(msg: Message, *args, **kwargs):
     await msg.answer("Привет! Это служебный бот.\n"
                      "Команды:\n"
                      "/help - список команд (в разработке)\n"
@@ -69,7 +69,7 @@ async def start_handler(msg: Message, mylist: list, mylist2: list, mylist3: list
 
 # Обрабатываем нажатие кнопок каталога
 @router.callback_query(MenuCD.filter(F.level == '0'))
-async def process_catalog_button_press(callback: CallbackQuery, callback_data: MenuCD, mylist2: list, group_name:str):
+async def process_catalog_button_press(callback: CallbackQuery, callback_data: MenuCD, mylist2: list, group_name:str, *args, **kwargs):
     group_name = get_group_attr(callback_data.category)
     sel = '<b>Выбрано:</b>\n' + '\n'.join(mylist2) if mylist2 else 'Выберите подкатегорию для запроса цен'
     await callback.message.edit_text(
@@ -97,7 +97,7 @@ async def process_subcategory_button_press(callback: CallbackQuery, callback_dat
 
 
 @router.callback_query(MenuCD.filter(F.level == '2'))
-async def process_subcategory_button_press(callback: CallbackQuery, callback_data: MenuCD, mylist: list, mylist2: list, mylist3: list):
+async def process_subcategory_button_press(callback: CallbackQuery, callback_data: MenuCD, mylist: list, mylist2: list, mylist3: list, *args, **kwargs):
     print(callback.data)
     item_index = int(callback_data.subcategory)
     mylist.pop(item_index)
@@ -134,7 +134,7 @@ async def process_subcategory_button_press(callback: CallbackQuery, callback_dat
 
 
 @router.callback_query(Text(text=['TO_BACK']))
-async def process_back_button_press(callback: CallbackQuery, mylist2: list):
+async def process_back_button_press(callback: CallbackQuery, mylist2: list, *args, **kwargs):
     sel = '<b>Выбрано:</b>\n' + '\n'.join(mylist2) if mylist2 else 'Выберите подкатегорию для запроса цен'
     await callback.message.edit_text(
         # text=sel + '\n\nКАТАЛОГ:',
@@ -143,7 +143,7 @@ async def process_back_button_press(callback: CallbackQuery, mylist2: list):
 
 
 @router.callback_query(Text(text=['EDIT']))
-async def process_back_button_press(callback: CallbackQuery, mylist: list, mylist2: list):
+async def process_back_button_press(callback: CallbackQuery, mylist: list, mylist2: list, *args, **kwargs):
     if mylist2:
         sel = '<b>Выбрано:</b>\n' + '\n'.join(mylist2)
         await callback.message.edit_text(
