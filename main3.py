@@ -14,13 +14,13 @@ from aiohttp.web_request import Request
 
 from config import TOKEN, CHAT_ID, APP_BASE_URL
 from handlers import router
-from aiogram.types import InputFile
+from aiogram.types import FSInputFile
 
 application = Application()
 
 
 async def on_startup(bot: Bot, base_url: str):
-    fil = InputFile('cert.pem')
+    fil = FSInputFile(filename='cert.pem')
     await bot.set_webhook(f"{base_url}/webhook", certificate=fil)
     await bot.set_chat_menu_button(
         menu_button=MenuButtonWebApp(text="Open Menu", web_app=WebAppInfo(url=f"{base_url}/demo"))

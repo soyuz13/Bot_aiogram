@@ -1,5 +1,5 @@
 from aiogram import F, Router, html, Bot
-from aiogram.types import Message, CallbackQuery, FSInputFile
+from aiogram.types import Message, CallbackQuery, FSInputFile, InputFile
 from aiogram.filters import Command, CommandObject, Text
 from datetime import datetime
 from keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
@@ -175,4 +175,5 @@ async def process_start_button_press(callback: CallbackQuery, mylist: list, myli
         await callback.message.answer(f'Для нового запроса цен нажмите /nevatom')
     else:
         await callback.answer('Список для запроса цен пока пустой. Добавьте в него подкатегории.')
+
 
