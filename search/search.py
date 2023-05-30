@@ -78,16 +78,16 @@ def get_link_to_filter_page(subgroups: list):
         get_filters(DOMAIN_URL + href)
 
 
-async def make_request(selected_subcats: list[str], group_name, subgr_name): #, start_time: dtime):
+async def make_request(selected_subcats: list[str]):
     global GROUP, SUBGROUP
-    GROUP, SUBGROUP = group_name, subgr_name
+    # GROUP, SUBGROUP = group_name, subgr_name
     # START_TIME = start_time.strftime("%H:%M:%S %d-%m-%Y")
     for item in selected_subcats:
         fullurl = DOMAIN_URL + item
         print(fullurl)
         await get_filters(fullurl)
     print(translit('Все!', reversed=True, language_code='ru'))
-    df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
+    df = pd.DataFrame(FULL_LIST, columns=["Фильтр", "Артикул", "Товар", "Цена"])
     df.to_excel('Nevatom.xlsx', index=False)
     FULL_LIST.clear()
     return 'Nevatom'
@@ -135,7 +135,7 @@ async def get_products(page_text: str, filter_href: str):
             product_code = re.search(r'\d+-\d+', fields[2]).group()
             price = float(re.search(r'\d+', fields[6].replace(' ', '')).group())
 
-            lst = (GROUP, SUBGROUP, FILTER, title, product_code, price)
+            lst = (FILTER, product_code, title, price)
             FULL_LIST.append(lst)
     # df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
     # df.to_excel('123.xlsx', index_label=False)
