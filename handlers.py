@@ -108,7 +108,7 @@ async def process_back_button_press(callback: CallbackQuery, list_captions: list
 
 
 @router.callback_query(Text(text=['EDIT']))
-async def process_back_button_press(callback: CallbackQuery, list_callbackcodes: list, list_captions: list):
+async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes: list, list_captions: list):
     if list_captions:
         sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions)
         await callback.message.edit_text(
@@ -137,5 +137,3 @@ async def process_start_button_press(callback: CallbackQuery, list_captions: lis
         await callback.message.answer(f'Для нового запроса цен нажмите /nevatom')
     else:
         await callback.answer('Список для запроса цен пока пустой. Добавьте в него подкатегории.')
-
-
