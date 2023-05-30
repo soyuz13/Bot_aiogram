@@ -2,6 +2,7 @@ from aiogram import F, Router, html, Bot
 from aiogram.types import Message, CallbackQuery, FSInputFile, InputFile
 from aiogram.filters import Command, CommandObject, Text
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
 import pprint
 import pickle
@@ -125,11 +126,11 @@ async def process_start_button_press(callback: CallbackQuery, list_captions: lis
             obj = pickle.load(fil)
 
         await callback.message.edit_reply_markup()
-        t1 = datetime.now()
+        t1 = datetime.now(tz=ZoneInfo('Asia/Vladivostok'))
         await callback.message.answer(f'Старт запроса цен {t1.strftime("%H:%M:%S %d.%m.%Y")}')
         filename = await make_request(obj)
         file = FSInputFile(filename + '.xlsx', filename=f'{filename} {t1.strftime("%H-%M-%S %d-%m-%Y")}.xlsx')
-        t2 = datetime.now()
+        t2 = datetime.now(tz=ZoneInfo('Asia/Vladivostok'))
         delta = t2 - t1
         await callback.message.answer(f'Запрос завершен за {delta.seconds} сек.')
         await callback.message.answer_document(file, caption='Вот фаш файл')
