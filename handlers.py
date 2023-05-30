@@ -33,7 +33,7 @@ def get_attr(category: int, subcategory: int, param: str):
 async def start_handler1(msg: Message, *args, **kwargs):
     await msg.answer("Привет! Это служебный бот.\n"
                      "Команды:\n"
-                     "/help - список команд (в разработке)\n"
+                     "/help - список команд (в разработке.)\n"
                      "/nevatom - запуск запроса цен на сайте Nevatom"
                      )
     # await msg.answer()
