@@ -5,5 +5,5 @@ load_dotenv()
 
 TOKEN = os.getenv('TLG_TOKEN')
 CHAT_ID = os.getenv('TLG_CHAT_ID')
-# APP_BASE_URL = 'https://176.124.192.33:80'
-APP_BASE_URL = 'https://d379-37-29-88-192.ngrok-free.app'
+APP_BASE_URL = 'https://176.124.192.33:80'
+# APP_BASE_URL = 'https://d379-37-29-88-192.ngrok-free.app'

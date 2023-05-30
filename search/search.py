@@ -87,7 +87,7 @@ async def make_request(selected_subcats: list[str]):
         print(fullurl)
         await get_filters(fullurl)
     print(translit('Все!', reversed=True, language_code='ru'))
-    df = pd.DataFrame(FULL_LIST, columns=["Фильтр", "Артикул", "Товар", "Цена"])
+    df = pd.DataFrame(FULL_LIST, columns=["Фильтр", "Товар", "Артикул", "Цена"])
     df.to_excel('Nevatom.xlsx', index=False)
     FULL_LIST.clear()
     return 'Nevatom'
@@ -135,7 +135,7 @@ async def get_products(page_text: str, filter_href: str):
             product_code = re.search(r'\d+-\d+', fields[2]).group()
             price = float(re.search(r'\d+', fields[6].replace(' ', '')).group())
 
-            lst = (FILTER, product_code, title, price)
+            lst = (FILTER, title, product_code, price)
             FULL_LIST.append(lst)
     # df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
     # df.to_excel('123.xlsx', index_label=False)

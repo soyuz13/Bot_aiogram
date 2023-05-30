@@ -3,25 +3,11 @@ from aiogram.types import Message, CallbackQuery, FSInputFile, InputFile
 from aiogram.filters import Command, CommandObject, Text
 from datetime import datetime
 from keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
-import pprint, json
+import pprint
 import pickle
-from pathlib import Path
-
 
 
 router = Router()
-
-msg_content = {
-    'phone_number': "Телефон",
-    'email': 'Электропочта',
-    'mention': "Имярек",
-    "hashtag": "Хэштег",
-    'bot_command': "Команда",
-    'url': "Урл :)",
-    'bold': "Жирный",
-    'italic': "Виталик",
-    'underline': 'Подчерк'
-}
 
 with open('data.pickle', 'rb') as fil:
     obj = pickle.load(fil)
@@ -74,7 +60,6 @@ async def process_catalog_button_press(callback: CallbackQuery, callback_data: M
     sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'Выберите подкатегорию для запроса цен'
     await callback.message.edit_text(
         text=sel,
-        # text=sel + '\n\nПОДКАТЕГОРИИ:',
         reply_markup=subgroups_keyboard(callback_data.category))
 
 
@@ -111,22 +96,6 @@ async def process_delete_button_press(callback: CallbackQuery, callback_data: Me
         await callback.message.edit_text(
             text='КАТАЛОГ:',
             reply_markup=groups_keyboard(obj))
-    # print(list_callbackcodes)
-    # print(list_callbackcodes.index(callback.data))
-    # subgr_name = get_attr(callback_data.category, callback_data.subcategory, 'caption')
-    # if callback.data not in list_callbackcodes:
-    #     list_callbackcodes.append(callback.data)
-    #     list_captions.append(get_attr(callback_data.category, callback_data.subcategory, 'caption'))
-    #     list_urls.append(get_attr(callback_data.category, callback_data.subcategory, 'url_path'))
-    #     with open(r'url_list.pickle', 'wb') as f:
-    #         pickle.dump(list_urls, file=f)
-    #     sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'Выберите подкатегорию для запроса цен'
-    #     await callback.message.edit_text(
-    #         # text=sel + '\n\nПОДКАТЕГОРИИ:',
-    #         text=sel,
-    #         reply_markup=callback.message.reply_markup)
-    # else:
-    #     await callback.answer('')
 
 
 @router.callback_query(Text(text=['TO_BACK']))
