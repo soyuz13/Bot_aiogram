@@ -21,8 +21,8 @@ application = Application()
 
 
 async def on_startup(bot: Bot, base_url: str):
-    # fil = FSInputFile('cert.pem')
-    await bot.set_webhook(f"{base_url}/webhook")#, certificate=fil)
+    fil = FSInputFile('cert.pem')
+    await bot.set_webhook(f"{base_url}/webhook", certificate=fil)
 
 
 async def demo_handler(request: Request):
@@ -50,11 +50,11 @@ def main():
 
     setup_application(application, dp, bot=bot)
 
-    # ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    # ssl_context.load_cert_chain('cert.pem', 'private.key')
+    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context.load_cert_chain('cert.pem', 'private.key')
 
-    run_app(application, host="127.0.0.1", port=8081)
-    # run_app(application, host="176.124.192.33", port=80, ssl_context=ssl_context)
+    # run_app(application, host="127.0.0.1", port=8081)
+    run_app(application, host="176.124.192.33", port=80, ssl_context=ssl_context)
 
 
 if __name__ == "__main__":
