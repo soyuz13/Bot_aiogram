@@ -81,8 +81,6 @@ def main_develop():
     application["bot"] = bot
     application.router.add_get("/demo", demo_handler)
 
-    # bot.delete_webhook(drop_pending_updates=True)
-
     SimpleRequestHandler(
         dispatcher=dp,
         bot=bot, list_callbackcodes=[], list_captions=[], list_urls=[], kb_msg_id=[]
@@ -98,7 +96,6 @@ def main_develop():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, filename='archives/bot.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     if DEVELOP:
         main_develop()
     else:
