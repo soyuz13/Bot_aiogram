@@ -1,3 +1,5 @@
+import pprint
+
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -8,7 +10,9 @@ from data_structure import Group, Subgroup
 from pathlib import Path
 from datetime import datetime as dtime
 from transliterate import translit
+import logging, json, pickle
 
+logger = logging.getLogger('log.parsing')
 
 DOMAIN_URL = 'https://www.nevatom.ru'
 CATALOG_URL = 'https://www.nevatom.ru/catalog/'
@@ -23,27 +27,32 @@ FULL_LIST = []
 START_TIME = ''
 
 
-def get_catalog(is_for_menu: bool = False):
-    res = requests.get(CATALOG_URL)
+def get_catalog():
+    TEMP_MENU_LIST.clear()
+    try:
+        res = requests.get(CATALOG_URL)
+        logger.info('Каталог запрошен')
+    except Exception as ex:
+        print(ex)
+        logger.error(ex)
+        return None
+
     soup = BeautifulSoup(res.text, 'html.parser')
     catalog_groups = soup.find_all('li', {'class': 'category-front__item'})
-    get_subgroups(catalog_groups, is_for_menu)
+    get_subgroups(catalog_groups)
 
-    # df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
-    # df.to_excel('1234.xlsx', index_label=False)
-    # if is_for_menu:
-    #     import json
-    #     with open('data.json', 'w', encoding='utf-8') as f:
-    #         json.dump(MENU_DICT, f, ensure_ascii=False, indent=4)
-    if is_for_menu:
-        import pickle
-        with open(r'data.pickle', 'wb') as f:
-            pickle.dump(TEMP_MENU_LIST, file=f)
+    import pickle
+    with open(r'../nevatom_catalog.pickle', 'wb') as f:
+        pickle.dump(TEMP_MENU_LIST, file=f)
+
+    return True
+
+    # with open(r'nevatom_catalog.json', 'w') as f:
+    #     json.dump(TEMP_MENU_LIST, file=f)
+    #     f = json.dump(TEMP_MENU_LIST)
 
 
-def get_subgroups(groups: list, is_for_menu: bool):
-    global GROUP
-
+def get_subgroups(groups: list):
     for n, group in enumerate(groups):
         one_group = group.find('a', {'class': 'category-item__link'})
         group_item = Group()
@@ -53,20 +62,17 @@ def get_subgroups(groups: list, is_for_menu: bool):
         group_item.id = n
 
         subgroups = group.findAll('li', {'class': 'category-item__menu-item'})
-        if is_for_menu:
-            lst = []
-            for m, i in enumerate(subgroups):
-                i = i.find('a')
-                ittem = Subgroup()
-                ittem.caption = i.text.strip()
-                ittem.caption_translit = Path(i['href']).parts[-1]
-                ittem.url_path = i['href']
-                ittem.id = m
-                lst.append(ittem)
-            group_item.subgroups = lst
-            TEMP_MENU_LIST.append(group_item)
-        else:
-            get_link_to_filter_page(subgroups)
+        lst = []
+        for m, i in enumerate(subgroups):
+            i = i.find('a')
+            ittem = Subgroup()
+            ittem.caption = i.text.strip()
+            ittem.caption_translit = Path(i['href']).parts[-1]
+            ittem.url_path = i['href']
+            ittem.id = m
+            lst.append(ittem)
+        group_item.subgroups = lst
+        TEMP_MENU_LIST.append(group_item)
 
 
 def get_link_to_filter_page(subgroups: list):
@@ -78,7 +84,7 @@ def get_link_to_filter_page(subgroups: list):
         get_filters(DOMAIN_URL + href)
 
 
-async def make_request(selected_subcats: list[str]):
+async def start_parcing(selected_subcats: list[str]):
     global GROUP, SUBGROUP
     # GROUP, SUBGROUP = group_name, subgr_name
     # START_TIME = start_time.strftime("%H:%M:%S %d-%m-%Y")
@@ -93,12 +99,10 @@ async def make_request(selected_subcats: list[str]):
     return 'Nevatom'
 
 
-async def get_filters(href:str = 'https://www.nevatom.ru/catalog/kanalnye_ventilyatory/'):
+async def get_filters(href):
     time.sleep(2 + random.randrange(0, 4000)/1000)
     res = requests.get(href, params=PARAMS)
     soup = BeautifulSoup(res.text, 'html.parser')
-    # product_card_list = soup.find_all('div', {'class': 'catalog-item__body'})
-    #
     filters = soup.find_all('div', {'class': 'filter-category__item-title'})
     await get_first_page(filters)
 
@@ -108,8 +112,8 @@ async def get_first_page(filters: list):
     for filter_ in filters:
         FILTER = filter_.text.strip()
         print(translit('......' + FILTER, reversed=True, language_code='ru'))
-        with open('links.txt', 'a') as fil:
-            fil.write(FILTER + '\n')
+        # with open('links.txt', 'a') as fil:
+        #     fil.write(FILTER + '\n')
         filter_href = DOMAIN_URL + filter_.find('a')['href']
         res = requests.get(filter_href, params=PARAMS)
         await get_products(res.text, filter_href)
@@ -142,11 +146,6 @@ async def get_products(page_text: str, filter_href: str):
 
     PARAMS['PAGEN_1'] = 1
 
-# first_request()
-# read_txt_page()
-
-# get_groups()
-
 
 def main():
     get_catalog(True)
@@ -158,11 +157,15 @@ def main2():
         'fds'
     ]
     make_request(lst)
-    df = pd.DataFrame(FULL_LIST, columns=['Группа', "Погруппа", "Фильтр", "Товар", "Артикул", "Цена"])
+    df = pd.DataFrame(FULL_LIST, columns=["Фильтр", "Товар", "Артикул", "Цена"])
     df.to_excel('1234.xlsx', index_label=False)
 
 
 if __name__ == '__main__':
-    with open('links.txt', 'w') as fil:
-        fil.write('')
-    main2()
+    # with open('links.txt', 'w') as fil:
+    #     fil.write('')
+    # main2()
+    # get_catalog()
+    with open('../nevatom_catalog.pickle', 'rb') as fil:
+        obj = pickle.load(fil)
+    pprint.pprint(obj, indent=4)

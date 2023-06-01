@@ -1,13 +1,13 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from data_structure import Group, Subgroup
 import pickle
 
 from aiogram.filters.callback_data import CallbackData
 
 
-with open('data.pickle', 'rb') as fil:
+with open('archives/data.pickle', 'rb') as fil:
     obj = pickle.load(fil)
 
 
@@ -32,13 +32,11 @@ def groups_keyboard(lst: list[Group]) -> InlineKeyboardMarkup:
                                                                              i.id)))
     kb_builder.row(*buttons, width=2)
 
-    kb_builder.row(InlineKeyboardButton(
-        text='💬 РЕДАКТИРОВАТЬ ВЫБРАННОЕ',
-        callback_data='EDIT'))
+    kb_builder.row(InlineKeyboardButton(text='💬 РЕДАКТИРОВАТЬ СПИСОК...', callback_data='EDIT'))
 
-    kb_builder.row(InlineKeyboardButton(
-        text='🚀 ЗАПУСТИТЬ ПОИСК',
-        callback_data='START'))
+
+    kb_builder.row(InlineKeyboardButton(text='⭕ ОТМЕНА', callback_data='CANCEL'),
+                   InlineKeyboardButton(text='🚀 ЗАПУСК', callback_data='START'))
 
     return kb_builder.as_markup()
 
@@ -56,12 +54,8 @@ def subgroups_keyboard(category: int) -> InlineKeyboardMarkup:
                                                                              category,
                                                                              i.id)))
     kb_builder.row(*buttons, width=2)
-    kb_builder.row(InlineKeyboardButton(
-        text='💬 РЕДАКТИРОВАТЬ ВЫБРАННОЕ',
-        callback_data='EDIT'))
-    kb_builder.row(InlineKeyboardButton(
-            text='⬅️ НАЗАД В КАТАЛОГ',
-            callback_data='TO_BACK'))
+    kb_builder.row(InlineKeyboardButton(text='💬 РЕДАКТИРОВАТЬ СПИСОК...', callback_data='EDIT'))
+    kb_builder.row(InlineKeyboardButton(text='⬅️ НАЗАД', callback_data='TO_BACK'))
 
     return kb_builder.as_markup()
 
@@ -77,7 +71,7 @@ def edit_keyboard(cbd: list, selected_list: list) -> InlineKeyboardMarkup:
 
     kb_builder.row(*buttons, width=1)
     kb_builder.row(InlineKeyboardButton(
-            text='⬅️ НАЗАД В КАТАЛОГ',
+            text='⬅️ НАЗАД',
             callback_data='TO_BACK'))
 
     return kb_builder.as_markup()
