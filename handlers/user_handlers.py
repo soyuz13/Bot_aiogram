@@ -126,13 +126,12 @@ async def process_delete_button_press(callback: CallbackQuery, callback_data: Me
 
 
 @router.callback_query(Text(text=['TO_BACK']))
-async def process_back_button_press(callback: CallbackQuery, list_captions: list, kb_msg_id: list):
+async def process_back_button_press(callback: CallbackQuery, list_captions: list):
     sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'КАТАЛОГ:'
     logger.debug('Фильтр в клавиатуре после кнопки "Назад"')
-    kb_msg_id.clear()
-    kb_msg_id.append(await callback.message.edit_text(
+    await callback.message.edit_text(
         text=sel,
-        reply_markup=groups_keyboard(CATALOG)))
+        reply_markup=groups_keyboard(CATALOG))
 
 
 @router.callback_query(Text(text=['EDIT']))
