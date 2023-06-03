@@ -2,8 +2,10 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from models.data_structure import Group
 import pickle
-
+import logging
 from aiogram.filters.callback_data import CallbackData
+
+logger = logging.getLogger('logs.inline_keyboards')
 
 
 class MenuCD(CallbackData, prefix='my_callback'):
@@ -58,8 +60,9 @@ def subgroups_keyboard(category: int) -> InlineKeyboardMarkup:
                                                                              i.id)))
     kb_builder.row(*buttons, width=2)
     kb_builder.row(InlineKeyboardButton(text='💬 РЕДАКТИРОВАТЬ СПИСОК...', callback_data='EDIT'))
+    logger.debug('Клавиатура с подгруппами готова 1')
     kb_builder.row(InlineKeyboardButton(text='⬅️ НАЗАД', callback_data='TO_BACK'))
-
+    logger.debug('Клавиатура с подгруппами готова 2')
     return kb_builder.as_markup()
 
 
@@ -73,9 +76,13 @@ def edit_keyboard(cbd: list, selected_list: list) -> InlineKeyboardMarkup:
                                             callback_data=make_callback_data(CURRENT_LEVEL, 0, n)))
 
     kb_builder.row(*buttons, width=1)
+    logger.debug('Клавиатура с удаленными готова 1')
+
     kb_builder.row(InlineKeyboardButton(
-            text='⬅️ НАЗАД',
-            callback_data='TO_BACK'))
+                text='⬅️ НАЗАД',
+                callback_data='TO_BACK'))
+
+    logger.debug('Клавиатура с удаленными готова 2')
 
     return kb_builder.as_markup()
 
