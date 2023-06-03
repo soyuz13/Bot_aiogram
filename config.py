@@ -16,9 +16,9 @@ def get_logger(name):
     logger.setLevel(logging.DEBUG)
     # создаем файловый обработчик, который
     # регистрирует отладочные сообщения
-    fh = logging.FileHandler('log/main.log', mode='w')
+    fh = logging.FileHandler('logs/main.log', mode='w')
     # fh = logging.handlers.RotatingFileHandler(
-    #     'log/main.log', maxBytes=1000000, backupCount=1)
+    #     'logs/main.logs', maxBytes=1000000, backupCount=1)
     fh.setLevel(logging.DEBUG)
     # создаем консольный обработчик
     # с более высоким уровнем журнала

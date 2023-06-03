@@ -6,13 +6,12 @@ import re
 import pandas as pd
 import time
 import random
-from data_structure import Group, Subgroup
+from models.data_structure import Group, Subgroup
 from pathlib import Path
-from datetime import datetime as dtime
 from transliterate import translit
-import logging, json, pickle
+import logging, pickle
 
-logger = logging.getLogger('log.parsing')
+logger = logging.getLogger('logs.parsing')
 
 DOMAIN_URL = 'https://www.nevatom.ru'
 CATALOG_URL = 'https://www.nevatom.ru/catalog/'
@@ -42,7 +41,7 @@ def get_catalog():
     get_subgroups(catalog_groups)
 
     import pickle
-    with open(r'../nevatom_catalog.pickle', 'wb') as f:
+    with open(r'files/nevatom_catalog.pickle', 'wb') as f:
         pickle.dump(TEMP_MENU_LIST, file=f)
 
     return True
@@ -94,7 +93,8 @@ async def start_parcing(selected_subcats: list[str]):
         await get_filters(fullurl)
     print(translit('Все!', reversed=True, language_code='ru'))
     df = pd.DataFrame(FULL_LIST, columns=["Фильтр", "Товар", "Артикул", "Цена"])
-    df.to_excel('Nevatom.xlsx', index=False)
+    name_path = 'files/Nevatom.xlsx'
+    df.to_excel(name_path, index=False)
     FULL_LIST.clear()
     return 'Nevatom'
 
@@ -166,6 +166,6 @@ if __name__ == '__main__':
     #     fil.write('')
     # main2()
     # get_catalog()
-    with open('../nevatom_catalog.pickle', 'rb') as fil:
+    with open('../files/nevatom_catalog.pickle', 'rb') as fil:
         obj = pickle.load(fil)
     pprint.pprint(obj, indent=4)

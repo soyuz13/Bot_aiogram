@@ -6,10 +6,10 @@ from aiogram import F, Router, Bot
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.filters import Command, Text
 from zoneinfo import ZoneInfo
-from keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
+from markups.inline_keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
 from parsing import parsing_nevatom
 
-logger = logging.getLogger('log.handlers')
+logger = logging.getLogger('logs.user_handlers')
 
 router = Router()
 CATALOG = []
@@ -56,7 +56,7 @@ async def start_handler2(msg: Message, list_callbackcodes: list, list_captions: 
     temp_answer = await msg.answer("Запрос каталога сайта...")
 
     if parsing_nevatom.get_catalog():
-        with open('nevatom_catalog.pickle', 'rb') as fil:
+        with open('files/nevatom_catalog.pickle', 'rb') as fil:
             global CATALOG
             CATALOG = pickle.load(fil)
     else:
@@ -95,7 +95,7 @@ async def process_subcategory_button_press(callback: CallbackQuery, callback_dat
         list_callbackcodes.append(callback.data)
         list_captions.append(get_attr(callback_data.category, callback_data.subcategory, 'caption'))
         list_urls.append(get_attr(callback_data.category, callback_data.subcategory, 'url_path'))
-        with open(r'selected_urls.pickle', 'wb') as f:
+        with open(r'files/selected_urls.pickle', 'wb') as f:
             pickle.dump(list_urls, file=f)
         sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'Выбери подкатегорию для запроса цен'
         await callback.message.edit_text(
@@ -113,7 +113,7 @@ async def process_delete_button_press(callback: CallbackQuery, callback_data: Me
     list_captions.pop(item_index)
     list_urls.pop(item_index)
     if list_captions:
-        with open(r'selected_urls.pickle', 'wb') as f:
+        with open(r'files/selected_urls.pickle', 'wb') as f:
             pickle.dump(list_urls, file=f)
         sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions)
         await callback.message.edit_text(
@@ -157,7 +157,7 @@ async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes:
 @router.callback_query(Text(text=['START']))
 async def process_start_button_press(callback: CallbackQuery, list_captions: list):
     if list_captions:
-        with open('selected_urls.pickle', 'rb') as fil:
+        with open('files/selected_urls.pickle', 'rb') as fil:
             url_list = pickle.load(fil)
 
         await callback.message.edit_reply_markup()
@@ -168,7 +168,7 @@ async def process_start_button_press(callback: CallbackQuery, list_captions: lis
         filename = await parsing_nevatom.start_parcing(url_list)
         logger.info(f'{callback.from_user.id} - Запрос на парсинг выполнен')
 
-        file = FSInputFile(filename + '.xlsx', filename=f'{filename} {t1.strftime("%H-%M-%S %d-%m-%Y")}.xlsx')
+        file = FSInputFile(f'files/{filename}.xlsx', filename=f'{filename} {t1.strftime("%H-%M-%S %d-%m-%Y")}.xlsx')
         logger.info(f'{callback.from_user.id} - Итоговый файл направлен в чат')
         t2 = datetime.now(tz=ZoneInfo('Asia/Vladivostok'))
         delta = t2 - t1
@@ -182,5 +182,5 @@ async def process_start_button_press(callback: CallbackQuery, list_captions: lis
 @router.message()
 async def start_handler1(msg: Message, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - Пришел текст: {msg.text}')
-    pprint.pprint(kwargs, indent=4)
-    await msg.reply("Текст направлен в лог")
+    # pprint.pprint(kwargs, indent=4)
+    await msg.reply("Текст принят. Воспрользуйтесь командой /start")

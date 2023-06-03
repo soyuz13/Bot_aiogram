@@ -1,20 +1,20 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
-from data_structure import Group, Subgroup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from models.data_structure import Group
 import pickle
 
 from aiogram.filters.callback_data import CallbackData
-
-
-with open('archives/data.pickle', 'rb') as fil:
-    obj = pickle.load(fil)
 
 
 class MenuCD(CallbackData, prefix='my_callback'):
     level: str
     category: int
     subcategory: int
+
+
+class AnyUsersList(CallbackData, prefix='anyuser'):
+    id: int
+    is_user_list: bool
 
 
 def make_callback_data(level, category=0, subcategory=0):
@@ -46,6 +46,9 @@ def subgroups_keyboard(category: int) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     buttons: list[InlineKeyboardButton] = []
 
+    with open('files/nevatom_catalog.pickle', 'rb') as fil:
+        obj = pickle.load(fil)
+
     chosen_subgroup = list(filter(lambda x: x.id == category, obj))[0]
 
     for i in chosen_subgroup.subgroups:
@@ -66,12 +69,44 @@ def edit_keyboard(cbd: list, selected_list: list) -> InlineKeyboardMarkup:
     buttons: list[InlineKeyboardButton] = []
 
     for n, i in enumerate(selected_list):
-        buttons.append(InlineKeyboardButton(text='❌ ' + i,
+        buttons.append(InlineKeyboardButton(text='✖️ ' + i,
                                             callback_data=make_callback_data(CURRENT_LEVEL, 0, n)))
 
     kb_builder.row(*buttons, width=1)
     kb_builder.row(InlineKeyboardButton(
             text='⬅️ НАЗАД',
             callback_data='TO_BACK'))
+
+    return kb_builder.as_markup()
+
+
+def yesno_keyboard() -> InlineKeyboardMarkup:
+    kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+    buttons: list[InlineKeyboardButton] = []
+
+    kb_builder.row(
+        InlineKeyboardButton(
+            text='⭕ ОТМЕНА',
+            callback_data='YES'),
+        InlineKeyboardButton(
+            text='✅ ДА',
+            callback_data='NO')
+    )
+
+    return kb_builder.as_markup()
+
+
+def any_users_keyboard(any_user_list: list, is_user_list: bool):
+    kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+    buttons: list[InlineKeyboardButton] = []
+
+    for n, i in enumerate(any_user_list):
+        buttons.append(InlineKeyboardButton(text='✖️ ' + str(i),
+                                            callback_data=AnyUsersList(id=i, is_user_list=is_user_list).pack()))
+
+    kb_builder.row(*buttons, width=1)
+    kb_builder.row(InlineKeyboardButton(
+        text='⭕ ОТМЕНА',
+        callback_data='CANCEL'))
 
     return kb_builder.as_markup()

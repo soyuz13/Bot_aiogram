@@ -13,20 +13,23 @@ from aiohttp.web_response import json_response
 from aiohttp.web_request import Request
 from aiogram.types import MenuButtonWebApp, WebAppInfo, MenuButtonDefault
 
-
 from config import TOKEN, APP_HOST, APP_PORT, DEVELOP, get_logger, TOKEN2
-from handlers import router
+from handlers import user_handlers, admin_handlers
 from aiogram.types import FSInputFile
 
 application = Application()
 
-logger = get_logger('log')
+logger = get_logger('logs')
 
 
 async def on_startup(bot: Bot, base_url: str):
     await bot.delete_webhook(drop_pending_updates=True)
     fil = FSInputFile('cert.pem')
     await bot.set_webhook(f"{base_url}/webhook", certificate=fil)
+
+
+async def on_exit(bot: Bot):
+    await bot.delete_webhook()
 
 
 async def on_startup_develop(bot: Bot, base_url: str, **kwargs):
@@ -48,7 +51,8 @@ def main():
     dp.startup.register(on_startup)
     logger.debug('Webhook установлен')
 
-    dp.include_router(router)
+    dp.include_router(admin_handlers.router)
+    dp.include_router(user_handlers.router)
 
     application["bot"] = bot
     application.router.add_get("/demo", demo_handler)
@@ -70,13 +74,14 @@ def main():
 def main_develop():
     bot = Bot(token=TOKEN2, parse_mode=ParseMode.HTML)
     dp = Dispatcher(storage=MemoryStorage())
-    dp["base_url"] = 'https://ec97-37-29-88-99.ngrok-free.app'
+    dp["base_url"] = 'https://4c3a-188-162-228-242.ngrok-free.app'
 
     logger.info('Ставим Хук на девелоп')
     dp.startup.register(on_startup_develop)
     logger.info('Хук установлен')
 
-    dp.include_router(router)
+    dp.include_router(admin_handlers.router)
+    dp.include_router(user_handlers.router)
 
     application["bot"] = bot
     application.router.add_get("/demo", demo_handler)
