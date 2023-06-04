@@ -5,7 +5,6 @@ from aiogram import F, Router, Bot
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.filters import Command, Text, CommandObject
 from filters.admin_filters import IsAdmin
-from typing import Literal
 from models.users import Users, Admins
 from markups.inline_keyboards import any_users_keyboard, AnyUsersList
 
@@ -18,6 +17,7 @@ router.message.filter(IsAdmin())
 @router.message(Command("start"))
 async def start_handler(msg: Message, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - /start')
+    print(msg.message_id)
 
     await msg.answer("Привет! Это служебный бот SplitHall.\n"
                      "Команды:\n"
@@ -29,6 +29,7 @@ async def start_handler(msg: Message, *args, **kwargs):
 @router.message(Command("help"))
 async def start_handler(msg: Message, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - /help')
+    print(msg.message_id)
     await msg.answer("Команды администратора:\n"                     
                      "/adduser id - добавление пользователя с id\n"
                      "/addadmin id - добавление администратора с id\n"
@@ -42,6 +43,7 @@ async def start_handler(msg: Message, *args, **kwargs):
 @router.message(Command(commands=["adduser", 'addadmin']))
 async def add_handler(msg: Message, command: CommandObject, bot: Bot, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - /adduser or admin')
+    print(msg.message_id)
     if not command.args:
         await msg.reply('После команды через пробел введите добавляемый id')
         return
@@ -53,9 +55,8 @@ async def add_handler(msg: Message, command: CommandObject, bot: Bot, *args, **k
     try:
         await bot.send_message(user_id, '👋 Вы добавлены в группу бота SplitHall!')
     except Exception as ex:
-        await bot.send_message(user_id, '❗ Ошибка добавления пользователя в бот SplitHall')
+        await msg.answer('❗ Ошибка добавления пользователя в бот SplitHall')
         print(ex)
-
         return
 
     if command.command == 'adduser':
@@ -71,6 +72,7 @@ async def add_handler(msg: Message, command: CommandObject, bot: Bot, *args, **k
 @router.message(Command(commands=["userlist", 'adminlist']))
 async def list_handler(msg: Message, command: CommandObject, bot: Bot, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - /user-adminlist')
+    print(msg.message_id)
     if command.command == 'userlist':
         anyuser_list = Users.get_list()
         is_user_list = True
@@ -87,6 +89,7 @@ async def list_handler(msg: Message, command: CommandObject, bot: Bot, *args, **
 @router.message(Command(commands=["clearusers", 'clearadmins']))
 async def list_handler(msg: Message, command: CommandObject, bot: Bot, *args, **kwargs):
     logger.info(f'{msg.from_user.id} - /clearusers-admins')
+    print(msg.message_id)
     if command.command == 'clearusers':
         Users.clear()
         await msg.answer(f'Пользователи удалены')
@@ -97,6 +100,7 @@ async def list_handler(msg: Message, command: CommandObject, bot: Bot, *args, **
 
 @router.callback_query(AnyUsersList.filter())
 async def anyuser_del_press(callback: CallbackQuery, callback_data: AnyUsersList):
+    print(callback.message.message_id)
     if callback_data.is_user_list:
         removed_id = Users.remove(callback_data.id)
         user_list = Users.get_list()
@@ -114,6 +118,7 @@ async def anyuser_del_press(callback: CallbackQuery, callback_data: AnyUsersList
 
 @router.callback_query(Text(text=['CANCEL']))
 async def anyuser_cancel_press(callback: CallbackQuery):
+    print(callback.message.message_id)
     await callback.message.edit_reply_markup(reply_markup=None)
 
 

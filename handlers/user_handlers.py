@@ -53,6 +53,7 @@ async def start_handler1(msg: Message, *args, **kwargs):
 @router.message(Command("nevatom"))
 async def start_handler2(msg: Message, list_callbackcodes: list, list_captions: list, list_urls: list):
     logger.info(f'{msg.from_user.id} - /nevatom')
+    print(msg.message_id)
     temp_answer = await msg.answer("Запрос каталога сайта...")
 
     if parsing_nevatom.get_catalog():
@@ -82,6 +83,7 @@ async def start_handler2(msg: Message, list_callbackcodes: list, list_captions: 
 @router.callback_query(MenuCD.filter(F.level == '0'))
 async def process_catalog_button_press(callback: CallbackQuery, callback_data: MenuCD, list_captions: list):
     group_name = get_group_name(callback_data.category)
+    print(callback.message.message_id)
     sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'Выбери подкатегорию для запроса цен'
     await callback.message.edit_text(
         text=sel,
@@ -91,6 +93,7 @@ async def process_catalog_button_press(callback: CallbackQuery, callback_data: M
 # Обрабатываем нажатие кнопок подкатегорий
 @router.callback_query(MenuCD.filter(F.level == '1'))
 async def process_subcategory_button_press(callback: CallbackQuery, callback_data: MenuCD, list_callbackcodes: list, list_captions: list, list_urls: list):
+    print(callback.message.message_id)
     if callback.data not in list_callbackcodes:
         list_callbackcodes.append(callback.data)
         list_captions.append(get_attr(callback_data.category, callback_data.subcategory, 'caption'))
@@ -108,6 +111,7 @@ async def process_subcategory_button_press(callback: CallbackQuery, callback_dat
 # Обрабатываем нажатие кнопок удаления из списка
 @router.callback_query(MenuCD.filter(F.level == '2'))
 async def process_delete_button_press(callback: CallbackQuery, callback_data: MenuCD, list_callbackcodes: list, list_captions: list, list_urls: list):
+    print(callback.message.message_id)
     item_index = int(callback_data.subcategory)
     list_callbackcodes.pop(item_index)
     list_captions.pop(item_index)
@@ -127,8 +131,8 @@ async def process_delete_button_press(callback: CallbackQuery, callback_data: Me
 
 @router.callback_query(Text(text=['TO_BACK']))
 async def process_back_button_press(callback: CallbackQuery, list_captions: list):
+    print(callback.message.message_id)
     sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions) if list_captions else 'КАТАЛОГ:'
-    logger.debug('Фильтр в клавиатуре после кнопки "Назад"')
     await callback.message.edit_text(
         text=sel,
         reply_markup=groups_keyboard(CATALOG))
@@ -136,6 +140,7 @@ async def process_back_button_press(callback: CallbackQuery, list_captions: list
 
 @router.callback_query(Text(text=['EDIT']))
 async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes: list, list_captions: list):
+    print(callback.message.message_id)
     if list_captions:
         sel = '<b>Выбрано:</b>\n' + '\n'.join(list_captions)
         await callback.message.edit_text(
@@ -147,6 +152,7 @@ async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes:
 
 @router.callback_query(Text(text=['CANCEL']))
 async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes: list, list_captions: list, list_urls: list):
+    print(callback.message.message_id)
     list_callbackcodes.clear()
     list_captions.clear()
     list_urls.clear()
@@ -156,6 +162,7 @@ async def process_edit_button_press(callback: CallbackQuery, list_callbackcodes:
 
 @router.callback_query(Text(text=['START']))
 async def process_start_button_press(callback: CallbackQuery, list_captions: list):
+    print(callback.message.message_id)
     if list_captions:
         with open('files/selected_urls.pickle', 'rb') as fil:
             url_list = pickle.load(fil)
