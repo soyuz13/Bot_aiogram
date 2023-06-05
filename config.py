@@ -8,8 +8,11 @@ TOKEN = os.getenv('TLG_TOKEN')
 TOKEN2 = os.getenv('TLG_TOKEN2')
 APP_HOST = os.getenv('APP_HOST')
 APP_PORT = os.getenv('APP_PORT')
+USER_LIST = 'user_list.txt'
+ADMIN_LIST = 'admin_list.txt'
 
 DEVELOP = True
+
 
 def get_logger(name):
     logger = logging.getLogger(name)

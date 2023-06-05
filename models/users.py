@@ -1,61 +1,40 @@
 import json
+from config import USER_LIST, ADMIN_LIST
 
 
 class Users:
-    filename = 'user_list.txt'
+    filename = USER_LIST
 
-    def add(id, filename=filename):
-        with open(f'files/{filename}', 'r') as fil:
+    @classmethod
+    def add(cls, id):
+        with open(f'files/{cls.filename}', 'r') as fil:
             lst = json.load(fil)
         lst.append(id)
-        with open(f'files/{filename}', 'w') as fil:
+        with open(f'files/{cls.filename}', 'w') as fil:
             json.dump(lst, fil)
         return id
 
-    def remove(id, filename=filename):
-        with open(f'files/{filename}', 'r') as fil:
+    @classmethod
+    def remove(cls, id):
+        with open(f'files/{cls.filename}', 'r') as fil:
             lst = json.load(fil)
         lst.remove(id)
-        with open(f'files/{filename}', 'w') as fil:
+        with open(f'files/{cls.filename}', 'w') as fil:
             json.dump(lst, fil)
         return id
 
-    def clear(filename=filename):
-        with open(f'files/{filename}', 'w') as fil:
+    @classmethod
+    def clear(cls):
+        with open(f'files/{cls.filename}', 'w') as fil:
             json.dump([], fil)
         return True
 
-    def get_list(filename=filename) -> list:
-        with open(f'files/{filename}', 'r') as fil:
+    @classmethod
+    def get_list(cls) -> list:
+        with open(f'files/{cls.filename}', 'r') as fil:
             lst = json.load(fil)
         return lst
 
 
-class Admins:
-    filename = 'admin_list.txt'
-
-    def add(id, filename=filename):
-        with open(f'files/{filename}', 'r') as fil:
-            lst = json.load(fil)
-        lst.append(id)
-        with open(f'files/{filename}', 'w') as fil:
-            json.dump(lst, fil)
-        return id
-
-    def remove(id, filename=filename):
-        with open(f'files/{filename}', 'r') as fil:
-            lst = json.load(fil)
-        lst.remove(id)
-        with open(f'files/{filename}', 'w') as fil:
-            json.dump(lst, fil)
-        return id
-
-    def clear(id, filename=filename):
-        with open(f'files/{filename}', 'w') as fil:
-            json.dump([id], fil)
-        return True
-
-    def get_list(filename=filename) -> list:
-        with open(f'files/{filename}', 'r') as fil:
-            lst = json.load(fil)
-        return lst
+class Admins(Users):
+    filename = ADMIN_LIST
