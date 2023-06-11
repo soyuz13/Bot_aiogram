@@ -4,14 +4,19 @@ import logging
 from datetime import datetime
 from aiogram import F, Router, Bot
 from aiogram.types import Message, CallbackQuery, FSInputFile
-from aiogram.filters import Command, Text
+from aiogram.filters import Command, Text, or_f
 from zoneinfo import ZoneInfo
 from markups.inline_keyboards import groups_keyboard, subgroups_keyboard, MenuCD, edit_keyboard
 from parsing import parsing_nevatom
+from filters import user_filters, admin_filters
 
 logger = logging.getLogger('logs.user_handlers')
 
 router = Router()
+router.message.filter(or_f(admin_filters.IsAdmin(), user_filters.IsUser()))
+# router.message.filter()
+
+
 CATALOG = []
 
 

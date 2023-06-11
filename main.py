@@ -74,7 +74,7 @@ def main():
 def main_develop():
     bot = Bot(token=TOKEN2, parse_mode=ParseMode.HTML)
     dp = Dispatcher(storage=MemoryStorage())
-    dp["base_url"] = 'https://2fcd-188-162-228-231.ngrok-free.app'
+    dp["base_url"] = 'https://5e19-188-162-228-234.ngrok-free.app'
 
     logger.info('Ставим Хук на девелоп')
     dp.startup.register(on_startup_develop)

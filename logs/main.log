@@ -1,0 +1,8 @@
+2023-06-07 07:03:13 - logs - INFO - Ставим Хук на девелоп
+2023-06-07 07:03:13 - logs - INFO - Хук установлен
+2023-06-07 07:04:01 - logs.user_handlers - INFO - 6110975042 - /help
+2023-06-07 07:04:07 - logs.user_handlers - INFO - 6110975042 - /nevatom
+2023-06-07 07:04:10 - logs.parsing - INFO - Каталог запрошен
+2023-06-07 07:04:18 - logs.admin_handlers - INFO - 192752787 - /user-adminlist
+2023-06-07 07:04:23 - logs.user_handlers - INFO - 192752787 - /nevatom
+2023-06-07 07:04:26 - logs.parsing - INFO - Каталог запрошен
